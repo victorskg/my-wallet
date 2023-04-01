@@ -2,14 +2,14 @@ package stock
 
 import (
 	"github.com/victorskg/my-wallet/internal/domain/stock"
-	"github.com/victorskg/my-wallet/internal/usecases/stock/gateway"
+	"github.com/victorskg/my-wallet/internal/gateways"
 )
 
 type SaveStock struct {
-	stockGateway gateway.StockGateway
+	stockGateway gateways.StockGateway
 }
 
-func NewSaveStockUseCase(stockGateway gateway.StockGateway) SaveStock {
+func NewSaveStockUseCase(stockGateway gateways.StockGateway) SaveStock {
 	return SaveStock{
 		stockGateway: stockGateway,
 	}

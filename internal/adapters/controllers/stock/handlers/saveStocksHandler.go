@@ -3,10 +3,11 @@ package handlers
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/victorskg/my-wallet/pkg/http/response"
 	"net/http"
 	"strconv"
 	"strings"
+
+	"github.com/victorskg/my-wallet/pkg/http/response"
 
 	domain "github.com/victorskg/my-wallet/internal/domain/stock"
 	usecases "github.com/victorskg/my-wallet/internal/usecases/stock"

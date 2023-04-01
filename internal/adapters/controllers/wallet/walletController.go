@@ -7,18 +7,26 @@ import (
 )
 
 type Controller struct {
-	createWalletHandler handlers.CreateWalletHandler
+	createWalletHandler   handlers.CreateWalletHandler
+	makeInvestmentHandler handlers.MakeInvestmentHandler
 }
 
-func NewWalletController(createWalletHandler handlers.CreateWalletHandler) controllers.Controller {
+func NewWalletController(createWalletHandler handlers.CreateWalletHandler,
+	makeInvestmentHandler handlers.MakeInvestmentHandler) controllers.Controller {
 	return Controller{
-		createWalletHandler: createWalletHandler,
+		createWalletHandler:   createWalletHandler,
+		makeInvestmentHandler: makeInvestmentHandler,
 	}
 }
 
 func (c Controller) Routes() chi.Router {
 	r := chi.NewRouter()
 	r.Post("/", c.createWalletHandler.CreateWallet)
+	r.Route("/{walletID}", func(r chi.Router) {
+		r.Route("/stocks", func(r chi.Router) {
+			r.Post("/buy", c.makeInvestmentHandler.MakeInvestment)
+		})
+	})
 
 	return r
 }

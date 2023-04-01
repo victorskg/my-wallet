@@ -3,40 +3,56 @@ package wallet
 import (
 	"time"
 
+	"github.com/victorskg/my-wallet/internal/gateways"
+
 	domain "github.com/victorskg/my-wallet/internal/domain/wallet"
 
 	"github.com/google/uuid"
-	"github.com/victorskg/my-wallet/internal/usecases/wallet/gateway"
 )
 
-type Input struct {
-	walletId uuid.UUID
-	assets   []struct {
-		ticker  string
-		price   float64
-		quotas  int16
-		buyDate time.Time
-	}
+type MakeInvestmentInput struct {
+	WalletID uuid.UUID
+	Assets   []InvestmentAsset
+}
+
+type InvestmentAsset struct {
+	Ticker  string
+	Price   float64
+	Quotas  int16
+	BuyDate time.Time
 }
 
 type MakeInvestment struct {
-	walletGateway gateway.WalletGateway
+	walletGateway gateways.WalletGateway
+	stockGateway  gateways.StockGateway
 }
 
-func (u MakeInvestment) Execute(input Input) error {
-	wallet, err := u.walletGateway.GetWallet(input.walletId)
+func NewMakeInvestmentUseCase(walletGateway gateways.WalletGateway, stockGateway gateways.StockGateway) MakeInvestment {
+	return MakeInvestment{
+		walletGateway: walletGateway,
+		stockGateway:  stockGateway,
+	}
+}
+
+func (u MakeInvestment) Execute(input MakeInvestmentInput) error {
+	wallet, err := u.walletGateway.GetWallet(input.WalletID)
 	if err != nil {
 		return err
 	}
 
-	for _, asset := range input.assets {
+	for _, asset := range input.Assets {
+		_, tickerErr := u.stockGateway.FindByTicker(asset.Ticker)
+		if tickerErr != nil {
+			return tickerErr
+		}
+
 		//TODO: Create constructor and validate values
 		investment := domain.Investment{
-			Quotas:   asset.quotas,
-			BuyDate:  asset.buyDate,
-			BuyPrice: asset.price,
+			Quotas:   asset.Quotas,
+			BuyDate:  asset.BuyDate,
+			BuyPrice: asset.Price,
 		}
-		wallet.MakeInvestment(asset.ticker, investment)
+		wallet.MakeInvestment(asset.Ticker, investment)
 	}
 
 	_, err = u.walletGateway.UpdateWallet(wallet)

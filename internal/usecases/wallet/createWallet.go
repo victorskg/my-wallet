@@ -2,14 +2,14 @@ package wallet
 
 import (
 	"github.com/victorskg/my-wallet/internal/domain/wallet"
-	"github.com/victorskg/my-wallet/internal/usecases/wallet/gateway"
+	"github.com/victorskg/my-wallet/internal/gateways"
 )
 
 type CreateWallet struct {
-	walletGateway gateway.WalletGateway
+	walletGateway gateways.WalletGateway
 }
 
-func NewCreateWalletUseCase(walletGateway gateway.WalletGateway) CreateWallet {
+func NewCreateWalletUseCase(walletGateway gateways.WalletGateway) CreateWallet {
 	return CreateWallet{
 		walletGateway: walletGateway,
 	}

@@ -40,7 +40,10 @@ func StockController() controllers.Controller {
 
 func WalletController() controllers.Controller {
 	walletGateway := database.NewWalletDatabaseGateway()
+	stockGateway := database.NewStockDatabaseGateway()
 	createWallet := wallet.NewCreateWalletUseCase(walletGateway)
 	createWalletHandler := walletHandlers.NewCreateWalletHandler(createWallet)
-	return walletController.NewWalletController(createWalletHandler)
+	makeInvestment := wallet.NewMakeInvestmentUseCase(walletGateway, stockGateway)
+	makeInvestmentHandler := walletHandlers.NewMakeInvestmentHandler(makeInvestment)
+	return walletController.NewWalletController(createWalletHandler, makeInvestmentHandler)
 }

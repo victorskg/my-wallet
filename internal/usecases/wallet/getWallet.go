@@ -3,11 +3,11 @@ package wallet
 import (
 	"github.com/google/uuid"
 	"github.com/victorskg/my-wallet/internal/domain/wallet"
-	"github.com/victorskg/my-wallet/internal/usecases/wallet/gateway"
+	"github.com/victorskg/my-wallet/internal/gateways"
 )
 
 type GetWallet struct {
-	walletGateway gateway.WalletGateway
+	walletGateway gateways.WalletGateway
 }
 
 func (u GetWallet) Execute(id uuid.UUID) (*wallet.Wallet, error) {
