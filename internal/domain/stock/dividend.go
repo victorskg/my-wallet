@@ -16,6 +16,15 @@ type Dividend struct {
 	dType       DType
 }
 
+func NewDividend(value float64, baseDate time.Time, paymentDate time.Time, dType DType) *Dividend {
+	return &Dividend{
+		value:       value,
+		baseDate:    baseDate,
+		paymentDate: paymentDate,
+		dType:       dType,
+	}
+}
+
 func (d Dividend) BaseDate() time.Time {
 	return d.baseDate
 }

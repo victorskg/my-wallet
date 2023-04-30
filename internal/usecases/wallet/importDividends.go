@@ -1,4 +1,4 @@
-package stock
+package wallet
 
 import (
 	"github.com/google/uuid"
@@ -14,15 +14,15 @@ const (
 	Error          OutputStatus = "error"
 )
 
-type OutputError struct {
-	ticker string
-	error  error
+type ImportDividendsOutputError struct {
+	Ticker string
+	Error  error
 }
 
-type Output struct {
-	message string
-	status  OutputStatus
-	errors  []OutputError
+type ImportDividendsOutput struct {
+	Message string
+	Status  OutputStatus
+	Errors  []ImportDividendsOutputError
 }
 
 type ImportDividends struct {
@@ -42,33 +42,33 @@ func NewImportDividendsUseCase(
 	}
 }
 
-func (u ImportDividends) Execute(walletID uuid.UUID) Output {
+func (u ImportDividends) Execute(walletID uuid.UUID) ImportDividendsOutput {
 	w, err := u.walletGateway.GetWallet(walletID)
 	if err != nil {
-		return Output{status: Error, message: err.Error()}
+		return ImportDividendsOutput{Status: Error, Message: err.Error()}
 	}
 
-	resultChannel := make(chan OutputError)
+	resultChannel := make(chan ImportDividendsOutputError)
 	for _, a := range w.Assets() {
-		go func(asset wallet.Asset, c chan<- OutputError) {
+		go func(asset wallet.Asset, c chan<- ImportDividendsOutputError) {
 			err = u.importDividendByAsset(asset)
-			c <- OutputError{ticker: asset.Ticker(), error: err}
+			c <- ImportDividendsOutputError{Ticker: asset.Ticker(), Error: err}
 		}(a, resultChannel)
 	}
 
-	output := Output{status: Success, message: "Dividendos importados com sucesso!", errors: []OutputError{}}
+	output := ImportDividendsOutput{Status: Success, Message: "Dividendos importados com sucesso!", Errors: []ImportDividendsOutputError{}}
 	for range w.Assets() {
 		result := <-resultChannel
-		if result.error != nil {
-			output.status = PartialSuccess
-			output.message = "Não foi possível importar o dividendo de alguns ativos."
-			output.errors = append(output.errors, result)
+		if result.Error != nil {
+			output.Status = PartialSuccess
+			output.Message = "Não foi possível importar o dividendo de alguns ativos."
+			output.Errors = append(output.Errors, result)
 		}
 	}
 
-	if len(output.errors) == len(w.Assets()) {
-		output.status = Error
-		output.message = "Não foi possível importar os dividendos."
+	if len(output.Errors) == len(w.Assets()) {
+		output.Status = Error
+		output.Message = "Não foi possível importar os dividendos."
 	}
 
 	return output

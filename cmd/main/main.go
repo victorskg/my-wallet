@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/victorskg/my-wallet/internal/adapters/gateways/client"
+
 	"github.com/victorskg/my-wallet/internal/adapters/gateways/database"
 
 	"github.com/go-chi/chi/v5"
@@ -42,9 +44,13 @@ func StockController() controllers.Controller {
 func WalletController() controllers.Controller {
 	walletGateway := database.NewWalletDatabaseGateway()
 	stockGateway := database.NewStockDatabaseGateway()
+	dividendsGateway := client.NewDividendClientGateway()
+
 	createWallet := wallet.NewCreateWalletUseCase(walletGateway)
 	createWalletHandler := walletHandlers.NewCreateWalletHandler(createWallet)
 	makeInvestment := wallet.NewMakeInvestmentUseCase(walletGateway, stockGateway)
 	makeInvestmentHandler := walletHandlers.NewMakeInvestmentHandler(makeInvestment)
-	return walletController.NewWalletController(createWalletHandler, makeInvestmentHandler)
+	importDividends := wallet.NewImportDividendsUseCase(stockGateway, walletGateway, dividendsGateway)
+	importDividendsHandler := walletHandlers.NewImportDividendsHandler(importDividends)
+	return walletController.NewWalletController(createWalletHandler, makeInvestmentHandler, importDividendsHandler)
 }

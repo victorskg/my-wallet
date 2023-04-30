@@ -92,7 +92,7 @@ func (h SaveStocksHandler) createStockFromFileLine(line []string) domain.Stock {
 	bookValue, _ := h.parseNumber(line[4])
 	patrimony, _ := h.parseNumber(line[5])
 	pvp, _ := h.parseNumber(line[6])
-	return *domain.NewStock(ticker, domain.Type(sType), category, subCategory,
+	return *domain.NewStock(ticker, domain.SType(sType), category, subCategory,
 		administrator, float32(bookValue), patrimony, float32(pvp))
 }
 

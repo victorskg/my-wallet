@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
 	"github.com/victorskg/my-wallet/pkg/http/response"
 
@@ -68,13 +67,7 @@ func (h MakeInvestmentHandler) processFileContent(w http.ResponseWriter, r *http
 		return
 	}
 
-	walletID, err := uuid.Parse(chi.URLParam(r, "walletID"))
-	if err != nil {
-		response.WriteResponseMessage(w, "O ID enviado não corresponde a um ID válido.",
-			http.StatusBadRequest)
-		return
-	}
-
+	walletID := r.Context().Value("walletID").(uuid.UUID)
 	investmentInput, err := h.createInvestmentInputFromFileData(walletID, data)
 	if err != nil {
 		response.WriteResponseMessage(w, err.Error(), http.StatusBadRequest)
