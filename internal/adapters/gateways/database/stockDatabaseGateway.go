@@ -19,3 +19,7 @@ func (g StockDatabaseGateway) SaveStocks(stocks []stock.Stock) ([]stock.Stock, e
 func (g StockDatabaseGateway) FindByTicker(ticker string) (*stock.Stock, error) {
 	return nil, nil
 }
+
+func (g StockDatabaseGateway) UpdateStock(stock *stock.Stock) (*stock.Stock, error) {
+	return nil, nil
+}

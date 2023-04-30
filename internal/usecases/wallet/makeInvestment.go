@@ -18,7 +18,7 @@ type MakeInvestmentInput struct {
 type InvestmentAsset struct {
 	Ticker  string
 	Price   float64
-	Quotas  int16
+	Quotas  uint32
 	BuyDate time.Time
 }
 

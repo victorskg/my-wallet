@@ -32,6 +32,10 @@ func (w Wallet) Id() uuid.UUID {
 	return w.id
 }
 
+func (w Wallet) Assets() []Asset {
+	return w.assets
+}
+
 func (w Wallet) MakeInvestment(ticker string, investment Investment) {
 	var asset *Asset
 	for _, a := range w.assets {

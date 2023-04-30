@@ -137,7 +137,7 @@ func (h MakeInvestmentHandler) createInvestmentAssetFromFileLine(line []string) 
 		Ticker:  ticker,
 		BuyDate: date,
 		Price:   price,
-		Quotas:  int16(quotas),
+		Quotas:  uint32(quotas),
 	}, nil
 }
 

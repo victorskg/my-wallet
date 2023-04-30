@@ -2,11 +2,11 @@ package stock
 
 import "time"
 
-type StockType string
+type SType string
 
 const (
-	Common    StockType = "common"
-	RealState StockType = "real_state"
+	Common     SType = "common"
+	RealEstate SType = "real_estate"
 )
 
 type Price struct {
@@ -17,7 +17,7 @@ type Price struct {
 type Stock struct {
 	ticker           string
 	name             string
-	sType            StockType
+	sType            SType
 	category         string
 	subCategory      string
 	administrator    string
@@ -28,7 +28,7 @@ type Stock struct {
 	historicalPrices []Price
 }
 
-func NewStock(ticker string, sType StockType, category string, subCategory string,
+func NewStock(ticker string, sType SType, category string, subCategory string,
 	administrator string, bookValue float32, patrimony float64, pvp float32) *Stock {
 	return &Stock{
 		ticker:        ticker,
@@ -39,5 +39,20 @@ func NewStock(ticker string, sType StockType, category string, subCategory strin
 		bookValue:     bookValue,
 		patrimony:     patrimony,
 		pvp:           pvp,
+	}
+}
+
+func (s *Stock) AddDividends(d ...Dividend) {
+	uniqueDividends := make(map[Dividend]bool)
+	for _, value := range s.dividends {
+		if !uniqueDividends[value] {
+			uniqueDividends[value] = true
+		}
+	}
+
+	for _, value := range d {
+		if !uniqueDividends[value] {
+			s.dividends = append(s.dividends, value)
+		}
 	}
 }

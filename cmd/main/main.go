@@ -4,6 +4,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/victorskg/my-wallet/internal/adapters/gateways/database"
+
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 
@@ -12,7 +14,6 @@ import (
 	stockHandlers "github.com/victorskg/my-wallet/internal/adapters/controllers/stock/handlers"
 	walletController "github.com/victorskg/my-wallet/internal/adapters/controllers/wallet"
 	walletHandlers "github.com/victorskg/my-wallet/internal/adapters/controllers/wallet/handlers"
-	"github.com/victorskg/my-wallet/internal/adapters/database"
 	"github.com/victorskg/my-wallet/internal/usecases/stock"
 	"github.com/victorskg/my-wallet/internal/usecases/wallet"
 )
