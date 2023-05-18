@@ -16,10 +16,10 @@ func NewCreateWalletUseCase(walletGateway gateways.WalletGateway) CreateWallet {
 }
 
 func (u CreateWallet) Execute(description string) (*wallet.Wallet, error) {
-	wallet, err := wallet.NewWallet(description)
+	newWallet, err := wallet.NewWallet(description)
 	if err != nil {
 		return nil, err
 	}
 
-	return u.walletGateway.CreateWallet(wallet)
+	return u.walletGateway.CreateWallet(newWallet)
 }

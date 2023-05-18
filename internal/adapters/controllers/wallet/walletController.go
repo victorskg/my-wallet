@@ -12,16 +12,19 @@ import (
 )
 
 type Controller struct {
+	getWalletHandler       handlers.GetWalletHandler
 	createWalletHandler    handlers.CreateWalletHandler
 	makeInvestmentHandler  handlers.MakeInvestmentHandler
 	importDividendsHandler handlers.ImportDividendsHandler
 }
 
 func NewWalletController(
+	getWalletHandler handlers.GetWalletHandler,
 	createWalletHandler handlers.CreateWalletHandler,
 	makeInvestmentHandler handlers.MakeInvestmentHandler,
 	importDividendsHandler handlers.ImportDividendsHandler) controllers.Controller {
 	return Controller{
+		getWalletHandler:       getWalletHandler,
 		createWalletHandler:    createWalletHandler,
 		makeInvestmentHandler:  makeInvestmentHandler,
 		importDividendsHandler: importDividendsHandler,
@@ -33,6 +36,7 @@ func (c Controller) Routes() chi.Router {
 	r.Post("/", c.createWalletHandler.CreateWallet)
 	r.Route("/{walletID}", func(r chi.Router) {
 		r.Use(WithIDContext)
+		r.Get("/", c.getWalletHandler.GetWallet)
 		r.Route("/stocks", func(r chi.Router) {
 			r.Post("/buy", c.makeInvestmentHandler.MakeInvestment)
 		})

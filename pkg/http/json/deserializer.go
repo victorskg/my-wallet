@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/victorskg/my-wallet/pkg/http/response"
 	"io"
 	"log"
 	"net/http"
 	"strings"
+
+	"github.com/victorskg/my-wallet/pkg/http/response"
 )
 
 func Deserialize[T any](input *T, w http.ResponseWriter, r *http.Request) error {

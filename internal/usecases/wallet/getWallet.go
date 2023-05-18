@@ -10,6 +10,10 @@ type GetWallet struct {
 	walletGateway gateways.WalletGateway
 }
 
+func NewGetWalletUseCase(walletGateway gateways.WalletGateway) GetWallet {
+	return GetWallet{walletGateway: walletGateway}
+}
+
 func (u GetWallet) Execute(id uuid.UUID) (*wallet.Wallet, error) {
 	return u.walletGateway.GetWallet(id)
 }

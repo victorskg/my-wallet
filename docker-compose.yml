@@ -1,0 +1,11 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: local_user
+      POSTGRES_PASSWORD: local_pwd
+      POSTGRES_DB: my_wallet
+    ports:
+      - "5432:5432"

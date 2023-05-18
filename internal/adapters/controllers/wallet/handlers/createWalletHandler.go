@@ -29,12 +29,12 @@ func (h CreateWalletHandler) CreateWallet(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	wallet, err := h.createWallet.Execute(data.Description)
+	wDomain, err := h.createWallet.Execute(data.Description)
 	if err != nil {
 		response.WriteResponseMessage(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
-	w.Header().Set("X-Wallet-ID", wallet.Id().String())
+	w.Header().Set("X-Wallet-ID", wDomain.Id().String())
 	w.WriteHeader(http.StatusCreated)
 }

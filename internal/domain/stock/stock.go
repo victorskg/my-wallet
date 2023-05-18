@@ -28,10 +28,11 @@ type Stock struct {
 	historicalPrices []Price
 }
 
-func NewStock(ticker string, sType SType, category string, subCategory string,
+func NewStock(ticker string, name string, sType SType, category string, subCategory string,
 	administrator string, bookValue float32, patrimony float64, pvp float32) *Stock {
 	return &Stock{
 		ticker:        ticker,
+		name:          name,
 		sType:         sType,
 		category:      category,
 		subCategory:   subCategory,

@@ -20,6 +20,13 @@ func NewWallet(description string) (*Wallet, error) {
 	})
 }
 
+func NewWalletFromDatabase(id uuid.UUID, description string) (*Wallet, error) {
+	return validate(&Wallet{
+		id:          id,
+		description: description,
+	})
+}
+
 func validate(wallet *Wallet) (*Wallet, error) {
 	if wallet.description == "" {
 		return nil, errors.New("A descrição da carteira é obrigatória.")
@@ -30,6 +37,10 @@ func validate(wallet *Wallet) (*Wallet, error) {
 
 func (w Wallet) Id() uuid.UUID {
 	return w.id
+}
+
+func (w Wallet) Description() string {
+	return w.description
 }
 
 func (w Wallet) Assets() []Asset {
