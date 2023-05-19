@@ -52,7 +52,10 @@ func (r *Repository[T]) SelectOne(where string) (*T, error) {
 		return nil, err
 	}
 
-	// separar not found de demais erros.
+	if len(results) == 0 {
+		return nil, nil
+	}
+
 	if len(results) != 1 {
 		return nil, fmt.Errorf("Expected 1 result, got %d.", len(results))
 	}

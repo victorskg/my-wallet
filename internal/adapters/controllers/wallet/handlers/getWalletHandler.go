@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/google/uuid"
 	"github.com/victorskg/my-wallet/internal/usecases/wallet"
+	domainErrors "github.com/victorskg/my-wallet/pkg/error"
 	"github.com/victorskg/my-wallet/pkg/http/response"
 	"net/http"
 )
@@ -26,7 +27,15 @@ func (h GetWalletHandler) GetWallet(w http.ResponseWriter, r *http.Request) {
 	walletID := r.Context().Value("walletID").(uuid.UUID)
 	wDomain, err := h.getWallet.Execute(walletID)
 	if err != nil {
-		w.WriteHeader(http.StatusNotFound)
+		responseStatus := http.StatusBadRequest
+		_, isNotFoundErr := err.(domainErrors.NotFound)
+
+		if isNotFoundErr {
+			responseStatus = http.StatusNotFound
+		}
+
+		response.WriteResponseMessage(w, err.Error(), responseStatus)
+		return
 	}
 
 	response.WriteJSONResponse(w, Output{

@@ -11,6 +11,7 @@ import (
 	"github.com/victorskg/my-wallet/internal/domain/wallet"
 	"github.com/victorskg/my-wallet/internal/gateways"
 	"github.com/victorskg/my-wallet/pkg/database"
+	pkgError "github.com/victorskg/my-wallet/pkg/error"
 )
 
 type WalletDatabaseGateway struct {
@@ -34,6 +35,10 @@ func (g WalletDatabaseGateway) GetWallet(id uuid.UUID) (*wallet.Wallet, error) {
 	walletEntity, err := g.repository.SelectOne(fmt.Sprintf("id = '%s'", id.String()))
 	if err != nil {
 		return nil, err
+	}
+
+	if walletEntity == nil && err == nil {
+		return nil, pkgError.NewNotFoundError(id)
 	}
 
 	walletDomain := g.mapper.FromEntityToDomain(*walletEntity)
