@@ -24,6 +24,20 @@ func NewWalletDatabaseGateway(repository *database.Repository[entity.WalletEntit
 }
 
 func (g WalletDatabaseGateway) CreateWallet(wallet *wallet.Wallet) (*wallet.Wallet, error) {
+	if err := g.repository.Connect(); err != nil {
+		return nil, err
+	}
+
+	walletEntity := g.mapper.FromDomainToEntity(*wallet)
+	walletEntity, err := g.repository.Insert(*walletEntity, "(id, description)", []any{
+		walletEntity.Id(),
+		walletEntity.Description(),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
 	return wallet, nil
 }
 

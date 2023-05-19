@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"strings"
 )
 
 type Entity interface {
@@ -90,4 +91,20 @@ func (r *Repository[T]) Select(where string) ([]*T, error) {
 	}
 
 	return results, nil
+}
+
+func (r *Repository[T]) Insert(entity T, columns string, values []any) (*T, error) {
+	var valuesInQuery []string
+	for i := 0; i < len(values); i++ {
+		valuesInQuery = append(valuesInQuery, fmt.Sprintf("$%d", i+1))
+	}
+
+	queryString := fmt.Sprintf("INSERT INTO %s.%s %s VALUES %s", r.schema, r.tableName, columns,
+		fmt.Sprintf("(%s)", strings.Join(valuesInQuery, ",")))
+	_, err := r.db.Exec(queryString, values...)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity, nil
 }
