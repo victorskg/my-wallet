@@ -1,12 +1,11 @@
 package handlers
 
 import (
+	"github.com/victorskg/my-wallet/internal/usecases"
 	"net/http"
 
 	"github.com/google/uuid"
 	"github.com/victorskg/my-wallet/pkg/http/response"
-
-	"github.com/victorskg/my-wallet/internal/usecases/wallet"
 )
 
 type responseBody struct {
@@ -21,10 +20,10 @@ type responseBodyDetails struct {
 }
 
 type ImportDividendsHandler struct {
-	importDividends wallet.ImportDividends
+	importDividends usecases.ImportDividends
 }
 
-func NewImportDividendsHandler(importDividends wallet.ImportDividends) ImportDividendsHandler {
+func NewImportDividendsHandler(importDividends usecases.ImportDividends) ImportDividendsHandler {
 	return ImportDividendsHandler{
 		importDividends: importDividends,
 	}
@@ -38,16 +37,16 @@ func (h ImportDividendsHandler) ImportDividends(w http.ResponseWriter, r *http.R
 	response.WriteJSONResponse(w, rBody, rBody.statusCode)
 }
 
-func (h ImportDividendsHandler) createResponseBody(output wallet.ImportDividendsOutput) responseBody {
+func (h ImportDividendsHandler) createResponseBody(output usecases.ImportDividendsOutput) responseBody {
 	var rBody = responseBody{message: output.Message}
 	switch output.Status {
-	case wallet.Success:
+	case usecases.Success:
 		rBody.statusCode = http.StatusCreated
 		break
-	case wallet.PartialSuccess:
+	case usecases.PartialSuccess:
 		rBody.statusCode = http.StatusPartialContent
 		break
-	case wallet.Error:
+	case usecases.Error:
 		rBody.statusCode = http.StatusBadRequest
 		break
 	}

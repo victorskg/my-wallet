@@ -1,4 +1,4 @@
-package wallet
+package usecases
 
 import (
 	"github.com/victorskg/my-wallet/internal/domain/wallet"

@@ -4,6 +4,7 @@ import (
 	"encoding/csv"
 	"errors"
 	"fmt"
+	"github.com/victorskg/my-wallet/internal/usecases"
 	"net/http"
 	"strconv"
 	"strings"
@@ -11,8 +12,6 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/victorskg/my-wallet/pkg/http/response"
-
-	"github.com/victorskg/my-wallet/internal/usecases/wallet"
 )
 
 const (
@@ -25,10 +24,10 @@ var expectedColumnsInOrder = []string{"Entrada/Saída", "Data", "Movimentação"
 	"Quantidade", "Preço unitário", "Valor da Operação"}
 
 type MakeInvestmentHandler struct {
-	makeInvestment wallet.MakeInvestment
+	makeInvestment usecases.MakeInvestment
 }
 
-func NewMakeInvestmentHandler(makeInvestment wallet.MakeInvestment) MakeInvestmentHandler {
+func NewMakeInvestmentHandler(makeInvestment usecases.MakeInvestment) MakeInvestmentHandler {
 	return MakeInvestmentHandler{
 		makeInvestment: makeInvestment,
 	}
@@ -82,7 +81,7 @@ func (h MakeInvestmentHandler) processFileContent(w http.ResponseWriter, r *http
 
 	response.WriteResponseMessage(w, "Investimentos lançados com sucesso.", http.StatusCreated)
 }
-func (h MakeInvestmentHandler) createInvestmentInputFromFileData(walletID uuid.UUID, data [][]string) (*wallet.MakeInvestmentInput, error) {
+func (h MakeInvestmentHandler) createInvestmentInputFromFileData(walletID uuid.UUID, data [][]string) (*usecases.MakeInvestmentInput, error) {
 	actualHeader := strings.Join(data[0], ",")
 	expectedHeader := strings.Join(expectedColumnsInOrder, ",")
 	if actualHeader != expectedHeader {
@@ -90,7 +89,7 @@ func (h MakeInvestmentHandler) createInvestmentInputFromFileData(walletID uuid.U
 			expectedHeader)
 	}
 
-	var assets []wallet.InvestmentAsset
+	var assets []usecases.InvestmentAsset
 	for _, line := range data[1:] {
 		if line[0] == "Credito" && line[2] == "Transferência - Liquidação" {
 			asset, err := h.createInvestmentAssetFromFileLine(line)
@@ -102,13 +101,13 @@ func (h MakeInvestmentHandler) createInvestmentInputFromFileData(walletID uuid.U
 		}
 	}
 
-	return &wallet.MakeInvestmentInput{
+	return &usecases.MakeInvestmentInput{
 		WalletID: walletID,
 		Assets:   assets,
 	}, nil
 }
 
-func (h MakeInvestmentHandler) createInvestmentAssetFromFileLine(line []string) (*wallet.InvestmentAsset, error) {
+func (h MakeInvestmentHandler) createInvestmentAssetFromFileLine(line []string) (*usecases.InvestmentAsset, error) {
 	date, err := time.Parse("02/01/2006", line[1])
 	if err != nil {
 		return nil, errors.New("A data enviada não corresponde a uma data válida. Envia a data no formato DD/MM/YYYY.")
@@ -126,7 +125,7 @@ func (h MakeInvestmentHandler) createInvestmentAssetFromFileLine(line []string) 
 		return nil, fmt.Errorf("O preço da cota enviado para o ativo %s na data %v é inválida.", ticker, date)
 	}
 
-	return &wallet.InvestmentAsset{
+	return &usecases.InvestmentAsset{
 		Ticker:  ticker,
 		BuyDate: date,
 		Price:   price,

@@ -1,12 +1,11 @@
 package handlers
 
 import (
+	"github.com/victorskg/my-wallet/internal/usecases"
 	"github.com/victorskg/my-wallet/pkg/http/response"
 	"net/http"
 
 	"github.com/victorskg/my-wallet/pkg/http/json"
-
-	"github.com/victorskg/my-wallet/internal/usecases/wallet"
 )
 
 type Input struct {
@@ -14,10 +13,10 @@ type Input struct {
 }
 
 type CreateWalletHandler struct {
-	createWallet wallet.CreateWallet
+	createWallet usecases.CreateWallet
 }
 
-func NewCreateWalletHandler(createWallet wallet.CreateWallet) CreateWalletHandler {
+func NewCreateWalletHandler(createWallet usecases.CreateWallet) CreateWalletHandler {
 	return CreateWalletHandler{
 		createWallet: createWallet,
 	}

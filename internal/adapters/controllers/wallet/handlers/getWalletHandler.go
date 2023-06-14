@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/google/uuid"
-	"github.com/victorskg/my-wallet/internal/usecases/wallet"
+	"github.com/victorskg/my-wallet/internal/usecases"
 	domainErrors "github.com/victorskg/my-wallet/pkg/error"
 	"github.com/victorskg/my-wallet/pkg/http/response"
 	"net/http"
@@ -14,10 +14,10 @@ type Output struct {
 }
 
 type GetWalletHandler struct {
-	getWallet wallet.GetWallet
+	getWallet usecases.GetWallet
 }
 
-func NewGetWalletHandler(getWallet wallet.GetWallet) GetWalletHandler {
+func NewGetWalletHandler(getWallet usecases.GetWallet) GetWalletHandler {
 	return GetWalletHandler{
 		getWallet: getWallet,
 	}

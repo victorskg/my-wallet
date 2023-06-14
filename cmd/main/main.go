@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/victorskg/my-wallet/internal/usecases"
 	"log"
 	"net/http"
 
@@ -16,7 +17,6 @@ import (
 	"github.com/victorskg/my-wallet/internal/adapters/gateways/database"
 	"github.com/victorskg/my-wallet/internal/adapters/gateways/database/entity"
 	"github.com/victorskg/my-wallet/internal/usecases/stock"
-	"github.com/victorskg/my-wallet/internal/usecases/wallet"
 	dbRepo "github.com/victorskg/my-wallet/pkg/database"
 )
 
@@ -63,13 +63,13 @@ func WalletController() controllers.Controller {
 	stockGateway := database.NewStockDatabaseGateway()
 	dividendsGateway := client.NewDividendClientGateway()
 
-	createWallet := wallet.NewCreateWalletUseCase(walletGateway)
+	createWallet := usecases.NewCreateWalletUseCase(walletGateway)
 	createWalletHandler := walletHandlers.NewCreateWalletHandler(createWallet)
-	getWallet := wallet.NewGetWalletUseCase(walletGateway)
+	getWallet := usecases.NewGetWalletUseCase(walletGateway)
 	getWalletHandler := walletHandlers.NewGetWalletHandler(getWallet)
-	makeInvestment := wallet.NewMakeInvestmentUseCase(walletGateway, stockGateway)
+	makeInvestment := usecases.NewMakeInvestmentUseCase(walletGateway, stockGateway)
 	makeInvestmentHandler := walletHandlers.NewMakeInvestmentHandler(makeInvestment)
-	importDividends := wallet.NewImportDividendsUseCase(stockGateway, walletGateway, dividendsGateway)
+	importDividends := usecases.NewImportDividendsUseCase(stockGateway, walletGateway, dividendsGateway)
 	importDividendsHandler := walletHandlers.NewImportDividendsHandler(importDividends)
 	return walletController.NewWalletController(getWalletHandler, createWalletHandler, makeInvestmentHandler, importDividendsHandler)
 }
